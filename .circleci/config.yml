@@ -29,8 +29,32 @@ jobs:
       # - node/install-packages:
       #     pkg-manager: yarn 
       - run:
-          name: Run tests
+          name: update-npm
+          command: 'sudo npm install -g npm@latest'
+      - run:
+          name: Check npm and node version
+          command: |
+            node --version
+            npm --version
+      - run:
+          name: install-npm
+          command: npm install
+      - save_cache: # special step to save the dependency cache
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+      - run: # run tests
+          name: test
           command: npm test
+      - run: 
+          name: audit
+          command: npm audit
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Build test container
+          command: |
+            docker build -t "ucp:${CIRCLE_BUILD_NUM}" .
 
 workflows:
   # Below is the definition of your workflow.
