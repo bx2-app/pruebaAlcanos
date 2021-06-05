@@ -29,9 +29,6 @@ jobs:
       # - node/install-packages:
       #     pkg-manager: yarn 
       - run:
-          name: update-npm
-          command: 'sudo npm install -g npm@latest'
-      - run:
           name: Check npm and node version
           command: |
             node --version
